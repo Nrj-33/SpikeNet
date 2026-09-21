@@ -1,44 +1,6 @@
-  //-------------------------------------------------
-    //Synapse with eligibility trace for R-STDP
-    //-------------------------------------------------
-    class Synapse
-    {
-        public:
-        double weight;
-        double eligibility;
-        double A_plus=0.05;
-        double A_minus=0.05;
-        double tau_stdp=20.0;
-
-        Synapse(double w) : weight(w) {}
-
-void accumulationEligibility(int dt_spike)
-{
-if(dt_spike>0)
-{
-    eligibility +=A_plus *std::exp(-dt_spike/tau_stdp);
-}
-else if(dt_spike<0)
-{
-    eligibility -=A_minus *std::exp(dt_spike/tau_stdp);
-}
-}
-void applyReward(double reward)
-{
-    weight += LEARNING_RATE * reward * eligibility;
-    if(weight<0.0)
-    {
-        weight=0.0;
-}
-if(weight>3.0)
-{
-    weight=3.0;
-}
-eligibility=0.0;
-}
-};
-
-double encodeInput(int pixel)
-{
-    return pixel == 1 ? 1.2 :0.05;
-}
+The human brain performs remarkably complex computation using surprisingly simple building blocks: neurons that communicate through discrete electrical pulses called spikes or action potential. Unlike artificial neurons used in conventional deep learning systems, which pass continuous real-valued activations between layers, biological neurons operate on a fundamentally different principle. A neuron accumulates incoming electrical charge over time, and only when this accumulation crosses a certain threshold does it “fire,” emitting a brief, all-or-nothing electrical pulse before resetting. This event-driven, spike-based communication method is not only energy-efficient but also significantly dependent on timing — it matters not just if a neuron receives an input, but precisely when it does so in relation to other signals. 
+Spiking Neural Networks (SNNs) represent a category of computational models that seek to mimic this biological process in either software or hardware, and they are commonly described as the "third generation" of neural network architectures. Unlike conventional artificial neural networks, SNNs convey information through sequences of discrete spikes over time, which makes them inherently well-suited for tasks that involve temporal patterns and gives them a much closer resemblance to the computation methods of actual neural circuits in the brain.
+The Leaky Integrate-and-Fire (LIF) Neuron Model
+Among the many mathematical models developed to describe spiking neuron behaviour — ranging from the highly detailed and biologically exhaustive Hodgkin-Huxley model to simpler abstractions — the Leaky Integrate-and-Fire (LIF) model is the most widely used in computational neuroscience and neuromorphic engineering, owing to its balance of biological plausibility and computational simplicity.
+The LIF model describes a neuron's membrane potential, V(t), as it evolves in response to an input current I(t). The neuron behaves like a simple electrical circuit — a capacitor (representing the cell membrane's ability to store charge) in parallel with a resistor (representing the membrane's natural tendency to "leak" charge back toward a resting state). The following differential equation captures this behaviour:
+dv/dt=(V(t)-Vrest)/τ+I(t)
